@@ -1,0 +1,160 @@
+# -------------------------
+# Global / OS
+# -------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# -------------------------
+# Editors and IDEs
+# -------------------------
+.vscode/
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+*.sln.iml
+
+# JetBrains Rider caches
+.idea/
+*.ipr
+*.iws
+
+# -------------------------
+# Common build artifacts
+# -------------------------
+build/
+Build/
+[Bb]uilds/
+[Bb]in*/
+[Bb]inaries/
+obj/
+Obj/
+*.log
+
+# -------------------------
+# Unreal Engine (TDChafa)
+# -------------------------
+# Ignore typical Unreal generated folders and files
+TDChafa/Binaries/
+TDChafa/DerivedDataCache/
+TDChafa/Intermediate/
+TDChafa/Saved/
+TDChafa/Build/
+TDChafa/.vs/
+TDChafa/.vscode/
+TDChafa/Plugins/*/Binaries/
+TDChafa/Plugins/*/Intermediate/
+# Ignore auto-generated project files (keep .uproject)
+TDChafa/*.xcodeproj/
+TDChafa/*.xcworkspace/
+TDChafa/*.sln
+TDChafa/*.sdf
+TDChafa/*.opensdf
+TDChafa/*.VC.db
+TDChafa/*.VC.VC.opendb
+
+# If you use Perforce or other source control metadata
+TDChafa/.p4config
+
+# Keep the .uproject file tracked
+!TDChafa/*.uproject
+
+# -------------------------
+# Unity (TWChafa)
+# -------------------------
+# Ignore Unity generated folders
+TWChafa/[Ll]ibrary/
+TWChafa/[Tt]emp/
+TWChafa/[Oo]bj/
+TWChafa/[Bb]uild/
+TWChafa/[Bb]uilds/
+TWChafa/[Uu]serSettings/
+TWChafa/MemoryCaptures/
+TWChafa/Logs/
+
+# Auto-generated project/IDE files
+TWChafa/*.csproj
+TWChafa/*.unityproj
+TWChafa/*.sln
+TWChafa/*.suo
+TWChafa/*.user
+TWChafa/*.userprefs
+TWChafa/*.pidb
+TWChafa/*.booproj
+TWChafa/*.svd
+
+# Unity cache and package manager
+TWChafa/Packages/packages-lock.json
+TWChafa/Library/PackageCache/
+TWChafa/Library/ScriptAssemblies/
+
+# Crash and profiler data
+TWChafa/CrashReports/
+TWChafa/Profiler/
+
+# Keep important Unity assets and project settings tracked
+!TWChafa/Assets/
+!TWChafa/ProjectSettings/
+!TWChafa/Packages/manifest.json
+
+# -------------------------
+# Common binary/media and secrets
+# -------------------------
+# Large media and common binary types you probably don't want in git
+*.exe
+*.dll
+*.lib
+*.so
+*.dylib
+*.apk
+*.a
+*.ipa
+*.unitypackage
+*.zip
+*.tar.gz
+*.rar
+
+# Secrets and credentials
+*.key
+*.pem
+*.pfx
+*.env
+.env.*
+
+# -------------------------
+# Optional: lockfiles and package managers
+# -------------------------
+# Node / npm
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+.pnpm-debug.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# -------------------------
+# Local overrides
+# -------------------------
+# If you need to keep a generated folder in repo, add a negation rule below.
+# Example: to keep a specific file in TDChafa/Saved, add:
+# !TDChafa/Saved/ImportantFile.keep
