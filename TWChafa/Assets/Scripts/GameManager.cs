@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public int lives = 10;
     public TextMeshProUGUI moneyText;
     public TextMeshProUGUI livesText;
-    public GameObject enemyPrefab;
+    public GameObject[] enemyPrefabs;
     public Transform spawnPoint;
 
     private float spawnTimer = 0f;
@@ -19,10 +19,13 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null)
+        // Singleton asegurado
+        if (Instance != null && Instance != this)
         {
-            Destroy(Instance.gameObject);
+            Destroy(gameObject);
+            return;
         }
+
         Instance = this;
     }
 
@@ -34,22 +37,34 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         spawnTimer += Time.deltaTime;
+        // Separación lógica de spawn
         if (spawnTimer >= spawnInterval)
         {
             SpawnEnemy();
             spawnTimer = 0f;
         }
-        // Te da dinero para probar, espero que los jugadores no sean tramposos
-        if (Keyboard.current.mKey.wasPressedThisFrame)
+
+        //Mejor al UI para debug
+        if (Keyboard.current != null && Keyboard.current.mKey.wasPressedThisFrame)
         {
             money += 10;
             UpdateUI();
         }
     }
 
+    // Mejor organización para el SpawEnemy
     void SpawnEnemy()
     {
-        Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        if (enemyPrefabs == null || enemyPrefabs.Length == 0 || spawnPoint == null)
+        {
+            Debug.LogError("No hay enemigos asignados");
+            return;
+        }
+
+        // Enemigos aleatorios
+        GameObject enemyToSpawn = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
+
+        Instantiate(enemyToSpawn, spawnPoint.position, Quaternion.identity);
     }
 
     public void AddMoney(int amount)
@@ -74,17 +89,26 @@ public class GameManager : MonoBehaviour
     {
         lives -= amount;
         UpdateUI();
+
         if (lives <= 0)
         {
-            // Estas muerto
-            Debug.Log("Ya valiste.");
-            Time.timeScale = 0f;
+            GameOver();
         }
+    }
+
+    // Mejor organización para el GameOver
+    void GameOver()
+    {
+        Debug.Log("Ya valiste.");
+        Time.timeScale = 0f;
     }
 
     void UpdateUI()
     {
-        moneyText.text = "$ " + money;
-        livesText.text = "Vidas: " + lives;
+        if (moneyText != null)
+            moneyText.text = "$ " + money;
+
+        if (livesText != null)
+            livesText.text = "Vidas: " + lives;
     }
 }
