@@ -8,6 +8,7 @@ public class GameUI : MonoBehaviour
     public Transform towerParent;
     public int towerCost = 50;
     public Transform[] towerSpawnPoints; // Nuevo para el GetSpawnPosition
+    private int currentSpawnIndex = 0;
 
     void Start()
     {
@@ -51,7 +52,16 @@ public class GameUI : MonoBehaviour
     // Mejor colleción del SpawPosition
     Vector3 GetSpawnPosition()
     {
-        // Mejora las spaw de las Tower compradas
-        return new Vector3(Random.Range(-5, 5), 0, Random.Range(-5, 5));
+        if (towerSpawnPoints == null || towerSpawnPoints.Length == 0)
+        {
+            Debug.LogError("No hay puntos de spawn asignados");
+            return Vector3.zero;
+        }
+
+        Transform spawnPoint = towerSpawnPoints[currentSpawnIndex];
+
+        // Avanza al siguiente
+        currentSpawnIndex++;
+        return spawnPoint.position;
     }
 }

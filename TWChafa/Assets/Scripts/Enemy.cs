@@ -8,26 +8,21 @@ public class Enemy : MonoBehaviour, IDamageable
     public int reward = 5;
 
     private int currentWaypoint = 0;
-    private GameObject[] waypoints;
-
-    void Start()
-    {
-        waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
-    }
+    public GameObject[] waypoints;
 
     void Update()
     {
         if (waypoints == null || waypoints.Length == 0) return;
 
-        Vector3 target = waypoints[currentWaypoint].transform.position;
+        GameObject target = waypoints[currentWaypoint];
 
         transform.position = Vector3.MoveTowards(
             transform.position,
-            target,
+            target.transform.position,
             speed * Time.deltaTime
         );
 
-        if (Vector3.Distance(transform.position, target) < 0.1f)
+        if (Vector3.Distance(transform.position, target.transform.position) < 0.1f)
         {
             currentWaypoint++;
 
