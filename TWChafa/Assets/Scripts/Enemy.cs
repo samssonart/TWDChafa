@@ -1,29 +1,31 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDamageable
 {
     public float speed = 2f;
     public int health = 10;
     public int reward = 5;
 
     private int currentWaypoint = 0;
-    private GameObject[] waypoints;
-
-    void Start()
-    {
-        waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
-    }
+    public GameObject[] waypoints;
 
     void Update()
     {
-        if (waypoints.Length == 0) return;
+        if (waypoints == null || waypoints.Length == 0) return;
 
-        Vector3 target = waypoints[currentWaypoint].transform.position;
-        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+        GameObject target = waypoints[currentWaypoint];
 
-        if (Vector3.Distance(transform.position, target) < 0.1f)
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            target.transform.position,
+            speed * Time.deltaTime
+        );
+
+        if (Vector3.Distance(transform.position, target.transform.position) < 0.1f)
         {
             currentWaypoint++;
+
             if (currentWaypoint >= waypoints.Length)
             {
                 GameManager.Instance.LoseLife(1);
@@ -35,6 +37,7 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
+
         if (health <= 0)
         {
             GameManager.Instance.AddMoney(reward);

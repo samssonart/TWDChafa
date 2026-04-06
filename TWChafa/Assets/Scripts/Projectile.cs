@@ -8,17 +8,34 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {
+        // Validar Target
         if (target == null)
         {
             Destroy(gameObject);
             return;
         }
 
-        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
+        // AutoAim
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            target.transform.position,
+            speed * Time.deltaTime
+        );
+
+        // Distancia de Impacto
         if (Vector3.Distance(transform.position, target.transform.position) < 0.2f)
         {
-            Enemy enemy = target.GetComponent<Enemy>();
-            enemy.TakeDamage(damage);    
+            IDamageable damageable = target.GetComponent<IDamageable>();
+
+            if (damageable != null)
+            {
+                damageable.TakeDamage(damage);
+            }
+            else
+            {
+                // Evita crash y ayuda a debug
+                Debug.LogWarning("El objeto no implementa IDamageable");
+            }
             Destroy(gameObject);
         }
     }
