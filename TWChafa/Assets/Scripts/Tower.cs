@@ -15,16 +15,16 @@ public class Tower : MonoBehaviour
 
         if (fireTimer < 1f / fireRate) return;
 
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        Collider[] enemies=Physics.OverlapSphere(transform.position, range,LayerMask.GetMask("Enemy"));
         GameObject nearest = null;
         float nearestDist = float.MaxValue;
 
-        foreach (GameObject e in enemies)
+        foreach (Collider col in enemies)
         {
-            float d = Vector3.Distance(transform.position, e.transform.position);
+            float d = Vector3.Distance(transform.position, col.transform.position);
             if (d < nearestDist && d <= range)
             {
-                nearest = e;
+                nearest = col.gameObject;
                 nearestDist = d;
             }
         }

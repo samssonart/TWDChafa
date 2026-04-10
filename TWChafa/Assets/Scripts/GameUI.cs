@@ -1,13 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// Clase de UI que se comunica con el GameManager para comprar torres
 public class GameUI : MonoBehaviour
 {
     public Button buyTowerButton;
-    public GameObject towerPrefab;
-    public Transform towerParent;
-    public int towerCost = 50;
+    public int towerCost = 100;
+
+    public static bool isPlacingTower = false;
 
     void Start()
     {
@@ -16,11 +15,9 @@ public class GameUI : MonoBehaviour
 
     void OnBuyTowerClicked()
     {
-        if (GameManager.Instance.SpendMoney(towerCost))
+        if (GameManager.Instance.money >= towerCost)
         {
-            GameObject t = Instantiate(towerPrefab, Vector3.zero, Quaternion.identity);
-            t.transform.SetParent(towerParent);
-            t.transform.localPosition = Vector3.zero;
+            isPlacingTower = true;
         }
         else
         {

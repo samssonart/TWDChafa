@@ -1,21 +1,22 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 // Clase principal que maneja el dinero, vidas, spawn de enemigos y actualiza la UI
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public int money = 100;
+    public int money = 50;
     public int lives = 10;
     public TextMeshProUGUI moneyText;
     public TextMeshProUGUI livesText;
     public GameObject enemyPrefab;
+    public GameObject fastEnemyPrefab;
     public Transform spawnPoint;
 
     private float spawnTimer = 0f;
     public float spawnInterval = 2f;
+    public int spawnCount = 0;
 
     void Awake()
     {
@@ -39,17 +40,21 @@ public class GameManager : MonoBehaviour
             SpawnEnemy();
             spawnTimer = 0f;
         }
-        // Te da dinero para probar, espero que los jugadores no sean tramposos
-        if (Keyboard.current.mKey.wasPressedThisFrame)
-        {
-            money += 10;
-            UpdateUI();
-        }
+       
     }
 
     void SpawnEnemy()
     {
-        Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        spawnCount++;
+
+        if (spawnCount % 3 == 0 && fastEnemyPrefab != null)
+        {
+            Instantiate(fastEnemyPrefab, spawnPoint.position, Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        }
     }
 
     public void AddMoney(int amount)
