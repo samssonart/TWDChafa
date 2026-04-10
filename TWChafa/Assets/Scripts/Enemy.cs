@@ -7,24 +7,24 @@ public class Enemy : MonoBehaviour
     public int reward = 5;
 
     private int currentWaypoint = 0;
-    private GameObject[] waypoints;
+    private WaypointManager waypointManager;
 
     void Start()
     {
-        waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
+        waypointManager = WaypointManager.Instance;
     }
 
     void Update()
     {
-        if (waypoints.Length == 0) return;
+        if (waypointManager == null || waypointManager.waypoints.Length == 0) return;
 
-        Vector3 target = waypoints[currentWaypoint].transform.position;
+        Vector3 target = waypointManager.waypoints[currentWaypoint].position;
         transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, target) < 0.1f)
         {
             currentWaypoint++;
-            if (currentWaypoint >= waypoints.Length)
+            if (currentWaypoint >= waypointManager.waypoints.Length)
             {
                 GameManager.Instance.LoseLife(1);
                 Destroy(gameObject);
