@@ -1,8 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
-// Clase principal que maneja el dinero, vidas, spawn de enemigos y actualiza la UI
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -39,7 +37,7 @@ public class GameManager : MonoBehaviour
             SpawnEnemy();
             spawnTimer = 0f;
         }
-        // Te da dinero para probar, espero que los jugadores no sean tramposos
+       
         if (Keyboard.current.mKey.wasPressedThisFrame)
         {
             money += 10;
@@ -76,7 +74,7 @@ public class GameManager : MonoBehaviour
         UpdateUI();
         if (lives <= 0)
         {
-            // Estas muerto
+           
             Debug.Log("Ya valiste.");
             Time.timeScale = 0f;
         }

@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// Clase de UI que se comunica con el GameManager para comprar torres
 public class GameUI : MonoBehaviour
 {
     public Button buyTowerButton;

@@ -15,11 +15,12 @@ public class Tower : MonoBehaviour
 
         if (fireTimer < 1f / fireRate) return;
 
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        GameObject nearest = null;
+       
+        EnemyBase[] enemies = Object.FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+        EnemyBase nearest = null;
         float nearestDist = float.MaxValue;
 
-        foreach (GameObject e in enemies)
+        foreach (EnemyBase e in enemies)
         {
             float d = Vector3.Distance(transform.position, e.transform.position);
             if (d < nearestDist && d <= range)
@@ -33,9 +34,10 @@ public class Tower : MonoBehaviour
         {
             GameObject p = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
             Projectile proj = p.GetComponent<Projectile>();
-            proj.target = nearest;
+
+            
+            proj.target = nearest.transform;
             fireTimer = 0f;
         }
     }
 }
-
