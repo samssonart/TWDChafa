@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 5759904791108123724}
   - component: {fileID: 7906101941115342769}
   - component: {fileID: 844762234887556193}
-  - component: {fileID: 5753493055378916478}
-  - component: {fileID: 3748732230632146994}
+  - component: {fileID: -1525072424620297715}
+  - component: {fileID: -6594673635958725088}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: FastEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -116,7 +116,7 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5753493055378916478
+--- !u!114 &-1525072424620297715
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -125,11 +125,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5717137307749988538}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91379bdd576699644abca23d7b5bee81, type: 3}
+  m_Script: {fileID: 11500000, guid: 38b64b2a08775ab44ba2ab7a7c3a15e5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  baseSpeed: 5
---- !u!114 &3748732230632146994
+  m_EditorClassIdentifier: Assembly-CSharp::FastEnemy
+  baseSpeed: 10
+--- !u!114 &-6594673635958725088
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -141,5 +141,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09334ca6aa08d7348817a57c663845d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  health: 35
-  reward: 5
+  health: 30
+  reward: 3

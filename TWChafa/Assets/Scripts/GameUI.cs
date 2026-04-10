@@ -1,13 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic; 
 
-// Clase de UI que se comunica con el GameManager para comprar torres
 public class GameUI : MonoBehaviour
 {
     public Button buyTowerButton;
     public GameObject towerPrefab;
-    public Transform towerParent;
-    public int towerCost = 50;
+    public int towerCost = 100;
 
     void Start()
     {
@@ -16,15 +15,40 @@ public class GameUI : MonoBehaviour
 
     void OnBuyTowerClicked()
     {
-        if (GameManager.Instance.SpendMoney(towerCost))
+        
+        GameObject[] buildPoints = GameObject.FindGameObjectsWithTag("BuildPoint");
+        List<GameObject> puntosDisponibles = new List<GameObject>();
+
+        
+        foreach (GameObject punto in buildPoints)
         {
-            GameObject t = Instantiate(towerPrefab, Vector3.zero, Quaternion.identity);
-            t.transform.SetParent(towerParent);
-            t.transform.localPosition = Vector3.zero;
+            
+            if (punto.transform.childCount == 0)
+            {
+                puntosDisponibles.Add(punto);
+            }
+        }
+
+        
+        if (puntosDisponibles.Count > 0)
+        {
+            if (GameManager.Instance.SpendMoney(towerCost))
+            {
+                
+                GameObject puntoElegido = puntosDisponibles[0];
+
+                
+                GameObject t = Instantiate(towerPrefab, puntoElegido.transform.position, Quaternion.identity);
+                t.transform.SetParent(puntoElegido.transform);
+            }
+            else
+            {
+                Debug.Log("No tienes dinero suficiente.");
+            }
         }
         else
         {
-            Debug.Log("No hay suficiente dinero para comprar la torre.");
+            Debug.Log("¡No quedan espacios para más torres!");
         }
     }
 }

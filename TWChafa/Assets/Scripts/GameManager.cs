@@ -1,72 +1,68 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using TMPro;
 
-// Clase principal que maneja el dinero, vidas, spawn de enemigos y actualiza la UI
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    [Header("Estadísticas del Jugador")]
     public int money = 100;
     public int lives = 10;
     public TextMeshProUGUI moneyText;
     public TextMeshProUGUI livesText;
-    public GameObject enemyPrefab;
-    public Transform spawnPoint;
 
-    private float spawnTimer = 0f;
+    [Header("Configuración de Enemigos")]
+    public GameObject[] enemyPrefabs;
+    public Transform spawnPoint;
+    public Transform[] waypoints;
+
+    [Header("Dificultad Progresiva (Innovación)")]
     public float spawnInterval = 2f;
+    public float minSpawnInterval = 0.5f;
+    public float decreaseRate = 0.02f;
+    private float spawnTimer = 0f;
 
     void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(Instance.gameObject);
-        }
-        Instance = this;
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
-    void Start()
-    {
-        UpdateUI();
-    }
+    void Start() => UpdateUI();
 
     void Update()
     {
+        
         spawnTimer += Time.deltaTime;
         if (spawnTimer >= spawnInterval)
         {
             SpawnEnemy();
             spawnTimer = 0f;
         }
-        // Te da dinero para probar, espero que los jugadores no sean tramposos
-        if (Keyboard.current.mKey.wasPressedThisFrame)
+
+        
+        if (spawnInterval > minSpawnInterval)
         {
-            money += 10;
-            UpdateUI();
+            spawnInterval -= decreaseRate * Time.deltaTime;
         }
     }
 
     void SpawnEnemy()
     {
-        Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        if (enemyPrefabs.Length == 0) return;
+
+        int index = Random.Range(0, enemyPrefabs.Length);
+        GameObject go = Instantiate(enemyPrefabs[index], spawnPoint.position, Quaternion.identity);
+
+        
+        go.GetComponent<Enemy>().SetPath(waypoints);
     }
 
-    public void AddMoney(int amount)
-    {
-        money += amount;
-        UpdateUI();
-    }
+    public void AddMoney(int amount) { money += amount; UpdateUI(); }
 
     public bool SpendMoney(int amount)
     {
-        if (money >= amount)
-        {
-            money -= amount;
-            UpdateUI();
-            return true;
-        }
-
+        if (money >= amount) { money -= amount; UpdateUI(); return true; }
         return false;
     }
 
@@ -76,8 +72,7 @@ public class GameManager : MonoBehaviour
         UpdateUI();
         if (lives <= 0)
         {
-            // Estas muerto
-            Debug.Log("Ya valiste.");
+            Debug.Log("HAS PERDIDO EL JUEGO");
             Time.timeScale = 0f;
         }
     }
