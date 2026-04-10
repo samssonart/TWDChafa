@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public GameObject target;
+   
+    public Transform target;
     public float speed = 10f;
     public int damage = 1;
 
@@ -14,11 +15,13 @@ public class Projectile : MonoBehaviour
             return;
         }
 
-        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
-        if (Vector3.Distance(transform.position, target.transform.position) < 0.2f)
+        transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
+
+        if (Vector3.Distance(transform.position, target.position) < 0.2f)
         {
-            Enemy enemy = target.GetComponent<Enemy>();
-            enemy.TakeDamage(damage);    
+        
+            IDamageable damageable = target.GetComponent<IDamageable>();
+            damageable?.TakeDamage(damage);
             Destroy(gameObject);
         }
     }
