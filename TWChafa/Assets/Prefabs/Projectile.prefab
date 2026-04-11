@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3438755210312442408}
   - component: {fileID: 4290613083340227031}
   - component: {fileID: 3872645012293579171}
-  - component: {fileID: 4257826454588098005}
+  - component: {fileID: -3144198228854745224}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -90,6 +90,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!135 &3872645012293579171
 SphereCollider:
@@ -112,7 +113,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4257826454588098005
+--- !u!114 &-3144198228854745224
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,6 +125,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b893b5ca38999f4da4995a06e82ee28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
-  target: {fileID: 0}
-  speed: 10
-  damage: 1

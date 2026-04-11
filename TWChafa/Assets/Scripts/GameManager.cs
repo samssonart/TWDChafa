@@ -5,30 +5,39 @@ using UnityEngine.InputSystem;
 // Clase principal que maneja el dinero, vidas, spawn de enemigos y actualiza la UI
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    public static GameManager Instance { get; private set; }
 
-    public int money = 100;
-    public int lives = 10;
-    public TextMeshProUGUI moneyText;
-    public TextMeshProUGUI livesText;
+    [Header("Ajustes de Juego")]
+    [SerializeField] private int money = 100;
+    [SerializeField] private int lives = 10;
+
+    [Header("Referencias de Spawning")]
     public GameObject enemyPrefab;
     public Transform spawnPoint;
-
-    private float spawnTimer = 0f;
     public float spawnInterval = 2f;
+    private float spawnTimer = 0f;
+
+    public WayPointRoute mainRoute;
+
+    public int CurrentMoney => money;
+    public int CurrentLives => lives;
 
     void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(Instance.gameObject);
-        }
-        Instance = this;
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
-    void Start()
+    void OnEnable()
     {
-        UpdateUI();
+        Enemy.OnEnemyKilled += AddMoney;
+        Enemy.OnEnemyReachedEnd += LoseLife;
+    }
+
+    void OnDisable()
+    {
+        Enemy.OnEnemyKilled -= AddMoney;
+        Enemy.OnEnemyReachedEnd -= LoseLife;
     }
 
     void Update()
@@ -39,52 +48,32 @@ public class GameManager : MonoBehaviour
             SpawnEnemy();
             spawnTimer = 0f;
         }
-        // Te da dinero para probar, espero que los jugadores no sean tramposos
-        if (Keyboard.current.mKey.wasPressedThisFrame)
-        {
-            money += 10;
-            UpdateUI();
-        }
     }
 
     void SpawnEnemy()
     {
-        Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        if (enemyPrefab == null || spawnPoint == null || mainRoute == null) return;
+
+        GameObject enemyObj = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        Enemy enemyScript = enemyObj.GetComponent<Enemy>();
+
+        if (enemyScript != null)
+        {
+            enemyScript.Setup(mainRoute);
+        }
     }
 
-    public void AddMoney(int amount)
-    {
-        money += amount;
-        UpdateUI();
-    }
+    public void AddMoney(int amount) => money += amount;
 
     public bool SpendMoney(int amount)
     {
-        if (money >= amount)
-        {
-            money -= amount;
-            UpdateUI();
-            return true;
-        }
-
+        if (money >= amount) { money -= amount; return true; }
         return false;
     }
 
     public void LoseLife(int amount)
     {
         lives -= amount;
-        UpdateUI();
-        if (lives <= 0)
-        {
-            // Estas muerto
-            Debug.Log("Ya valiste.");
-            Time.timeScale = 0f;
-        }
-    }
-
-    void UpdateUI()
-    {
-        moneyText.text = "$ " + money;
-        livesText.text = "Vidas: " + lives;
+        if (lives <= 0) { Time.timeScale = 0f; Debug.Log("Game Over");}
     }
 }

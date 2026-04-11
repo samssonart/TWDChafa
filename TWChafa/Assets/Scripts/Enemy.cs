@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -6,27 +7,31 @@ public class Enemy : MonoBehaviour
     public int health = 10;
     public int reward = 5;
 
-    private int currentWaypoint = 0;
-    private GameObject[] waypoints;
+    public static event Action<int> OnEnemyReachedEnd;
+    public static event Action<int> OnEnemyKilled;
 
-    void Start()
+    private int currentWaypointIndex = 0;
+    private WayPointRoute route;
+
+    public void Setup(WayPointRoute assignedRoute)
     {
-        waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
+        route = assignedRoute;
     }
 
     void Update()
     {
-        if (waypoints.Length == 0) return;
+        if (route == null || currentWaypointIndex >= route.points.Length) return;
 
-        Vector3 target = waypoints[currentWaypoint].transform.position;
-        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+        Transform target = route.points[currentWaypointIndex];
+        transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
 
-        if (Vector3.Distance(transform.position, target) < 0.1f)
+        if (Vector3.Distance(transform.position, target.position) < 0.1f)
         {
-            currentWaypoint++;
-            if (currentWaypoint >= waypoints.Length)
+            currentWaypointIndex++;
+
+            if (currentWaypointIndex >= route.points.Length)
             {
-                GameManager.Instance.LoseLife(1);
+                OnEnemyReachedEnd?.Invoke(1);
                 Destroy(gameObject);
             }
         }
@@ -37,7 +42,7 @@ public class Enemy : MonoBehaviour
         health -= damage;
         if (health <= 0)
         {
-            GameManager.Instance.AddMoney(reward);
+            OnEnemyKilled?.Invoke(reward);
             Destroy(gameObject);
         }
     }

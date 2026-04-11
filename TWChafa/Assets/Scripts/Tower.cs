@@ -1,40 +1,54 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    public float range = 5f;
     public float fireRate = 1f;
     public GameObject projectilePrefab;
     public Transform firePoint;
+    public float projectileSpeed = 10f;
+    public int damage = 2;
 
     private float fireTimer = 0f;
+    private List<Enemy> enemiesInRange = new List<Enemy>();
 
     void Update()
     {
         fireTimer += Time.deltaTime;
 
-        if (fireTimer < 1f / fireRate) return;
+        enemiesInRange.RemoveAll(e => e == null);
 
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        GameObject nearest = null;
-        float nearestDist = float.MaxValue;
-
-        foreach (GameObject e in enemies)
+        if (enemiesInRange.Count > 0 && fireTimer >= 1f / fireRate)
         {
-            float d = Vector3.Distance(transform.position, e.transform.position);
-            if (d < nearestDist && d <= range)
-            {
-                nearest = e;
-                nearestDist = d;
-            }
+            Shoot(enemiesInRange[0]);
+            fireTimer = 0;
         }
+    }
 
-        if (nearest != null)
+    void Shoot(Enemy targetEnemy)
+    {
+        GameObject p = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        Projectile proj = p.GetComponent<Projectile>();
+        
+        if (proj != null)
         {
-            GameObject p = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
-            Projectile proj = p.GetComponent<Projectile>();
-            proj.target = nearest;
-            fireTimer = 0f;
+            proj.Setup(targetEnemy.transform, projectileSpeed, damage);
+        }
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.TryGetComponent<Enemy>(out Enemy enemy))
+        {
+            enemiesInRange.Add(enemy);
+        }
+    }
+
+    private void OnTriggerExit(Collider collision)
+    {
+        if (collision.TryGetComponent<Enemy>(out Enemy enemy))
+        {
+            enemiesInRange.Remove(enemy);
         }
     }
 }
