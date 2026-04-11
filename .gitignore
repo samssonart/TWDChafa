@@ -158,3 +158,11 @@ __pycache__/
 # If you need to keep a generated folder in repo, add a negation rule below.
 # Example: to keep a specific file in TDChafa/Saved, add:
 # !TDChafa/Saved/ImportantFile.keep
+
+Temp/
+Library/
+Obj/
+Build/
+Builds/
+Logs/
+UserSettings/
