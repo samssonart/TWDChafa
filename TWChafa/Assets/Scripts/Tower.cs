@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+
 
 public class Tower : MonoBehaviour
 {
@@ -14,8 +16,8 @@ public class Tower : MonoBehaviour
         fireTimer += Time.deltaTime;
 
         if (fireTimer < 1f / fireRate) return;
-
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+          List<GameObject> enemies = GameManager.Instance.enemies;
+   
         GameObject nearest = null;
         float nearestDist = float.MaxValue;
 

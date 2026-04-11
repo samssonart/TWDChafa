@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+
 
 public class Enemy : MonoBehaviour
 {
@@ -11,8 +13,21 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
+        GameManager.Instance.enemies.Add(gameObject);
+        
+        
         waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
+
+        System.Array.Sort(waypoints, (a, b)=> a.name.CompareTo(b.name));
     }
+
+    void OnDestroy()
+    {
+        if (GameManager.Instance != null)
+        GameManager.Instance.enemies.Remove(gameObject);
+    }
+
+
 
     void Update()
     {
