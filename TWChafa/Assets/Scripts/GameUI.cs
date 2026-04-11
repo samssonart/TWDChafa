@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
-// Clase de UI que se comunica con el GameManager para comprar torres
 public class GameUI : MonoBehaviour
 {
     public Button buyTowerButton;
@@ -9,9 +9,37 @@ public class GameUI : MonoBehaviour
     public Transform towerParent;
     public int towerCost = 50;
 
+    public TextMeshProUGUI moneyText;
+    public TextMeshProUGUI livesText;
+
     void Start()
     {
         buyTowerButton.onClick.AddListener(OnBuyTowerClicked);
+
+        GameManager.Instance.OnMoneyChanged += UpdateMoneyText;
+        GameManager.Instance.OnLivesChanged += UpdateLivesText;
+
+        UpdateMoneyText(GameManager.Instance.money);
+        UpdateLivesText(GameManager.Instance.lives);
+    }
+
+    void OnDestroy()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnMoneyChanged -= UpdateMoneyText;
+            GameManager.Instance.OnLivesChanged -= UpdateLivesText;
+        }
+    }
+
+    private void UpdateMoneyText(int newAmount)
+    {
+        moneyText.text = "$ " + newAmount;
+    }
+
+    private void UpdateLivesText(int newLives)
+    {
+        livesText.text = "Vidas: " + newLives;
     }
 
     void OnBuyTowerClicked()

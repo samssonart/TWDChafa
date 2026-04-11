@@ -1,34 +1,42 @@
-using TMPro;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// Clase principal que maneja el dinero, vidas, spawn de enemigos y actualiza la UI
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
     public int money = 100;
     public int lives = 10;
-    public TextMeshProUGUI moneyText;
-    public TextMeshProUGUI livesText;
+
+    [Header("Configuración de Enemigos")]
     public GameObject enemyPrefab;
     public Transform spawnPoint;
+    public Transform[] pathWaypoints;
+
+    public EnemyData normalEnemyData;
+    public EnemyData tankEnemyData;
 
     private float spawnTimer = 0f;
     public float spawnInterval = 2f;
+    private int enemyCounter = 0;
+
+    public List<Enemy> activeEnemies = new List<Enemy>();
+
+    public event Action<int> OnMoneyChanged;
+    public event Action<int> OnLivesChanged;
 
     void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(Instance.gameObject);
-        }
+        if (Instance != null) Destroy(Instance.gameObject);
         Instance = this;
     }
 
     void Start()
     {
-        UpdateUI();
+        OnMoneyChanged?.Invoke(money);
+        OnLivesChanged?.Invoke(lives);
     }
 
     void Update()
@@ -39,23 +47,30 @@ public class GameManager : MonoBehaviour
             SpawnEnemy();
             spawnTimer = 0f;
         }
-        // Te da dinero para probar, espero que los jugadores no sean tramposos
+
         if (Keyboard.current.mKey.wasPressedThisFrame)
         {
-            money += 10;
-            UpdateUI();
+            AddMoney(10);
         }
     }
 
     void SpawnEnemy()
     {
-        Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        GameObject newEnemyObj = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        Enemy enemyScript = newEnemyObj.GetComponent<Enemy>();
+
+        EnemyData dataToUse = (enemyCounter % 4 == 0) ? tankEnemyData : normalEnemyData;
+        enemyCounter++;
+
+        enemyScript.Init(dataToUse, pathWaypoints);
+
+        activeEnemies.Add(enemyScript);
     }
 
     public void AddMoney(int amount)
     {
         money += amount;
-        UpdateUI();
+        OnMoneyChanged?.Invoke(money);
     }
 
     public bool SpendMoney(int amount)
@@ -63,28 +78,20 @@ public class GameManager : MonoBehaviour
         if (money >= amount)
         {
             money -= amount;
-            UpdateUI();
+            OnMoneyChanged?.Invoke(money);
             return true;
         }
-
         return false;
     }
 
     public void LoseLife(int amount)
     {
         lives -= amount;
-        UpdateUI();
+        OnLivesChanged?.Invoke(lives);
         if (lives <= 0)
         {
-            // Estas muerto
             Debug.Log("Ya valiste.");
             Time.timeScale = 0f;
         }
-    }
-
-    void UpdateUI()
-    {
-        moneyText.text = "$ " + money;
-        livesText.text = "Vidas: " + lives;
     }
 }

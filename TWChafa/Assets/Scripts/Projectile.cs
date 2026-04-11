@@ -10,16 +10,22 @@ public class Projectile : MonoBehaviour
     {
         if (target == null)
         {
-            Destroy(gameObject);
+            ProjectilePool.Instance.ReturnProjectile(gameObject);
             return;
         }
 
+        Vector3 direction = target.transform.position - transform.position;
+
+        transform.right = direction;
+
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
+
         if (Vector3.Distance(transform.position, target.transform.position) < 0.2f)
         {
             Enemy enemy = target.GetComponent<Enemy>();
-            enemy.TakeDamage(damage);    
-            Destroy(gameObject);
+            enemy.TakeDamage(damage);
+
+            ProjectilePool.Instance.ReturnProjectile(gameObject);
         }
     }
 }

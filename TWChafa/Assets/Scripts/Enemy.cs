@@ -2,23 +2,30 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float speed = 2f;
-    public int health = 10;
-    public int reward = 5;
+    private float speed;
+    private int health;
+    private int reward;
 
     private int currentWaypoint = 0;
-    private GameObject[] waypoints;
+    private Transform[] waypoints;
 
-    void Start()
+    public void Init(EnemyData data, Transform[] path)
     {
-        waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
+        speed = data.speed;
+        health = data.health;
+        reward = data.reward;
+        waypoints = path;
     }
 
     void Update()
     {
-        if (waypoints.Length == 0) return;
+        if (waypoints == null || waypoints.Length == 0) return;
 
-        Vector3 target = waypoints[currentWaypoint].transform.position;
+        Vector3 target = waypoints[currentWaypoint].position;
+
+        Vector3 lookAtTarget = new Vector3(target.x, transform.position.y, target.z);
+        transform.LookAt(lookAtTarget);
+
         transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, target) < 0.1f)
@@ -27,7 +34,7 @@ public class Enemy : MonoBehaviour
             if (currentWaypoint >= waypoints.Length)
             {
                 GameManager.Instance.LoseLife(1);
-                Destroy(gameObject);
+                Die();
             }
         }
     }
@@ -38,7 +45,13 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             GameManager.Instance.AddMoney(reward);
-            Destroy(gameObject);
+            Die();
         }
+    }
+
+    private void Die()
+    {
+        GameManager.Instance.activeEnemies.Remove(this);
+        Destroy(gameObject);
     }
 }
