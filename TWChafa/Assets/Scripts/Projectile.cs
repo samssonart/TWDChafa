@@ -6,20 +6,35 @@ public class Projectile : MonoBehaviour
     public float speed = 10f;
     public int damage = 1;
 
+    void OnEnable()
+    {
+        target = null;
+    }
+
     void Update()
     {
-        if (target == null)
+        if (target == null || !target.activeInHierarchy)
         {
-            Destroy(gameObject);
+            ReturnPool();
             return;
         }
 
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
         if (Vector3.Distance(transform.position, target.transform.position) < 0.2f)
         {
-            Enemy enemy = target.GetComponent<Enemy>();
-            enemy.TakeDamage(damage);    
-            Destroy(gameObject);
+            IDamageable damageable = target.GetComponent<IDamageable>();
+
+            if (damageable != null )
+            {
+                damageable.TakeDamage(damage);
+            }
+            ReturnPool();
         }
+    }
+
+    void ReturnPool()
+    {
+        target = null;
+        ProjectilePool.Instance.ReturnProjectile(gameObject);
     }
 }

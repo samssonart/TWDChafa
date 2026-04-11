@@ -11,12 +11,29 @@ public class GameUI : MonoBehaviour
 
     void Start()
     {
-        buyTowerButton.onClick.AddListener(OnBuyTowerClicked);
+        if (buyTowerButton != null)
+        {
+            buyTowerButton.onClick.AddListener(OnBuyTowerClicked);
+        }
     }
 
     void OnBuyTowerClicked()
     {
-        if (GameManager.Instance.SpendMoney(towerCost))
+        if (towerPrefab == null || towerParent == null)
+        {
+            Debug.Log("Falta towerprefab o towerParent");
+            return;
+        }
+
+        if (GameManager.Instance == null)
+        {
+            Debug.Log("No existe GameManager.");
+            return;
+        }
+
+        bool canBuy = GameManager.Instance.SpendMoney(towerCost);
+
+        if (canBuy)
         {
             GameObject t = Instantiate(towerPrefab, Vector3.zero, Quaternion.identity);
             t.transform.SetParent(towerParent);
