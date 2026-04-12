@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 // Clase principal que maneja el dinero, vidas, spawn de enemigos y actualiza la UI
 public class GameManager : MonoBehaviour
@@ -11,19 +12,28 @@ public class GameManager : MonoBehaviour
     public int lives = 10;
     public TextMeshProUGUI moneyText;
     public TextMeshProUGUI livesText;
-    public GameObject enemyPrefab;
+    public GameObject[] enemyPrefabs;
     public Transform spawnPoint;
+    public List<GameObject> enemies = new List<GameObject>();
 
     private float spawnTimer = 0f;
     public float spawnInterval = 2f;
 
     void Awake()
     {
-        if (Instance != null)
+        if (Instance == null)
         {
-            Destroy(Instance.gameObject);
+            Instance = this; 
         }
-        Instance = this;
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
+            
+        
+      
+       
+
     }
 
     void Start()
@@ -49,7 +59,11 @@ public class GameManager : MonoBehaviour
 
     void SpawnEnemy()
     {
-        Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+       if (enemyPrefabs == null || enemyPrefabs.Length == 0) return;
+
+       int randomIndex = UnityEngine.Random.Range(0, enemyPrefabs.Length);
+
+       Instantiate(enemyPrefabs[randomIndex], spawnPoint.position, Quaternion.identity);
     }
 
     public void AddMoney(int amount)

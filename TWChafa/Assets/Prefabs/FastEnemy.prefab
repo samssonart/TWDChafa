@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5013314806940215100
+--- !u!1 &3334819258747627338
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,48 +8,48 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1813783662051940786}
-  - component: {fileID: 3438755210312442408}
-  - component: {fileID: 4290613083340227031}
-  - component: {fileID: 3872645012293579171}
-  - component: {fileID: 4257826454588098005}
+  - component: {fileID: 2290175196636222346}
+  - component: {fileID: 1116519276047677455}
+  - component: {fileID: 7788458725952688697}
+  - component: {fileID: 5068183070168020899}
+  - component: {fileID: -1312216253149210418}
   m_Layer: 0
-  m_Name: Projectile
+  m_Name: FastEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1813783662051940786
+--- !u!4 &2290175196636222346
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5013314806940215100}
+  m_GameObject: {fileID: 3334819258747627338}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.59297, y: 0.56, z: 4.58108}
-  m_LocalScale: {x: 0.8, y: 0.3, z: 0.3}
+  m_LocalPosition: {x: -0.46139, y: 1.29, z: 10.16536}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &3438755210312442408
+--- !u!33 &1116519276047677455
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5013314806940215100}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &4290613083340227031
+  m_GameObject: {fileID: 3334819258747627338}
+  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &7788458725952688697
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5013314806940215100}
+  m_GameObject: {fileID: 3334819258747627338}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3545781a4ea765e4cbbb983fb7a5dbeb, type: 2}
+  - {fileID: 2100000, guid: 9d2279968fa0fdf448efd7c301d643ce, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -92,13 +92,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &3872645012293579171
-SphereCollider:
+--- !u!136 &5068183070168020899
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5013314806940215100}
+  m_GameObject: {fileID: 3334819258747627338}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -110,21 +110,23 @@ SphereCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 2
   m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4257826454588098005
+--- !u!114 &-1312216253149210418
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5013314806940215100}
+  m_GameObject: {fileID: 3334819258747627338}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b893b5ca38999f4da4995a06e82ee28, type: 3}
+  m_Script: {fileID: 11500000, guid: 91379bdd576699644abca23d7b5bee81, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Projectile
-  target: {fileID: 5717137307749988538, guid: 67dfd52a7ae2d8a438e8e760bdb56d3f, type: 3}
-  speed: 10
-  damage: 1
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  speed: 5
+  health: 2
+  reward: 3
