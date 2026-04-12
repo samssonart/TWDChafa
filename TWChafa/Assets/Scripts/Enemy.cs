@@ -2,43 +2,89 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float speed = 2f;
-    public int health = 10;
-    public int reward = 5;
+    [Header("Movimiento")]
+    [SerializeField] protected float speed = 2f;
 
-    private int currentWaypoint = 0;
-    private GameObject[] waypoints;
+    [Header("Stats")]
+    [SerializeField] protected int health = 10;
+    [SerializeField] protected int reward = 5;
+    [SerializeField] protected int damageToBase = 1;
 
-    void Start()
+    protected Transform[] waypoints;
+    protected int currentWaypointIndex = 0;
+
+    private void Update()
     {
-        waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
+        MoveAlongPath();
     }
 
-    void Update()
+    public void SetWaypoints(Transform[] newWaypoints)
     {
-        if (waypoints.Length == 0) return;
+        waypoints = newWaypoints;
+        currentWaypointIndex = 0;
+    }
 
-        Vector3 target = waypoints[currentWaypoint].transform.position;
-        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
-
-        if (Vector3.Distance(transform.position, target) < 0.1f)
+    private void MoveAlongPath()
+    {
+        if (waypoints == null || waypoints.Length == 0)
         {
-            currentWaypoint++;
-            if (currentWaypoint >= waypoints.Length)
+            return;
+        }
+
+        if (currentWaypointIndex >= waypoints.Length)
+        {
+            ReachBase();
+            return;
+        }
+
+        Transform targetWaypoint = waypoints[currentWaypointIndex];
+
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetWaypoint.position,
+            speed * Time.deltaTime
+        );
+
+        float distanceToWaypoint = Vector3.Distance(transform.position, targetWaypoint.position);
+
+        if (distanceToWaypoint <= 0.05f)
+        {
+            currentWaypointIndex++;
+
+            if (currentWaypointIndex >= waypoints.Length)
             {
-                GameManager.Instance.LoseLife(1);
-                Destroy(gameObject);
+                ReachBase();
             }
         }
+    }
+
+    protected void ReachBase()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.LoseLife(damageToBase);
+        }
+
+        Destroy(gameObject);
     }
 
     public void TakeDamage(int damage)
     {
         health -= damage;
+
         if (health <= 0)
         {
-            GameManager.Instance.AddMoney(reward);
-            Destroy(gameObject);
+            Die();
         }
+    }
+
+    protected void Die()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.AddMoney(reward);
+        }
+
+        Destroy(gameObject);
     }
 }

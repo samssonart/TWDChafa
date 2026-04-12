@@ -1,55 +1,96 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-// Clase principal que maneja el dinero, vidas, spawn de enemigos y actualiza la UI
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public int money = 100;
-    public int lives = 10;
-    public TextMeshProUGUI moneyText;
-    public TextMeshProUGUI livesText;
-    public GameObject enemyPrefab;
-    public Transform spawnPoint;
+    [Header("Recursos del jugador")]
+    [SerializeField] private int money = 100;
+    [SerializeField] private int lives = 10;
 
-    private float spawnTimer = 0f;
-    public float spawnInterval = 2f;
+    [Header("UI")]
+    [SerializeField] private TextMeshProUGUI moneyText;
+    [SerializeField] private TextMeshProUGUI livesText;
 
-    void Awake()
+    [Header("Spawn de enemigos")]
+    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private GameObject fastEnemyPrefab;
+    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private float spawnInterval = 2f;
+
+    [Header("Ruta de enemigos")]
+    [SerializeField] private Transform[] waypoints;
+
+    [Header("Torres")]
+    [SerializeField] private int towersBought = 0;
+
+    private float spawnTimer;
+
+    private void Awake()
     {
-        if (Instance != null)
+        if (Instance != null && Instance != this)
         {
-            Destroy(Instance.gameObject);
+            Destroy(gameObject);
+            return;
         }
+
         Instance = this;
     }
 
-    void Start()
+    private void Start()
     {
         UpdateUI();
     }
 
-    void Update()
+    private void Update()
+    {
+        HandleEnemySpawn();
+    }
+
+    private void HandleEnemySpawn()
     {
         spawnTimer += Time.deltaTime;
+
         if (spawnTimer >= spawnInterval)
         {
             SpawnEnemy();
             spawnTimer = 0f;
         }
-        // Te da dinero para probar, espero que los jugadores no sean tramposos
-        if (Keyboard.current.mKey.wasPressedThisFrame)
+    }
+
+    private void SpawnEnemy()
+    {
+        GameObject enemyToSpawn = enemyPrefab;
+
+        if (towersBought >= 2 && fastEnemyPrefab != null)
         {
-            money += 10;
-            UpdateUI();
+            int randomEnemy = Random.Range(0, 2);
+
+            if (randomEnemy == 1)
+            {
+                enemyToSpawn = fastEnemyPrefab;
+            }
+        }
+
+        GameObject newEnemyObject = Instantiate(enemyToSpawn, spawnPoint.position, Quaternion.identity);
+
+        Enemy newEnemy = newEnemyObject.GetComponent<Enemy>();
+
+        if (newEnemy != null)
+        {
+            newEnemy.SetWaypoints(waypoints);
         }
     }
 
-    void SpawnEnemy()
+    public void RegisterTowerPurchase()
     {
-        Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        towersBought++;
+    }
+
+    public int GetTowerCount()
+    {
+        return towersBought;
     }
 
     public void AddMoney(int amount)
@@ -60,31 +101,44 @@ public class GameManager : MonoBehaviour
 
     public bool SpendMoney(int amount)
     {
-        if (money >= amount)
+        if (money < amount)
         {
-            money -= amount;
-            UpdateUI();
-            return true;
+            return false;
         }
 
-        return false;
+        money -= amount;
+        UpdateUI();
+        return true;
     }
 
     public void LoseLife(int amount)
     {
         lives -= amount;
-        UpdateUI();
-        if (lives <= 0)
+
+        if (lives < 0)
         {
-            // Estas muerto
-            Debug.Log("Ya valiste.");
+            lives = 0;
+        }
+
+        UpdateUI();
+
+        if (lives == 0)
+        {
+            Debug.Log("Game Over");
             Time.timeScale = 0f;
         }
     }
 
-    void UpdateUI()
+    private void UpdateUI()
     {
-        moneyText.text = "$ " + money;
-        livesText.text = "Vidas: " + lives;
+        if (moneyText != null)
+        {
+            moneyText.text = "$ " + money;
+        }
+
+        if (livesText != null)
+        {
+            livesText.text = "Vidas: " + lives;
+        }
     }
 }

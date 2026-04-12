@@ -3,10 +3,16 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     public GameObject target;
-    public float speed = 10f;
-    public int damage = 1;
 
-    void Update()
+    [SerializeField] private float speed = 10f;
+    [SerializeField] private int damage = 1;
+
+    private void Update()
+    {
+        MoveToTarget();
+    }
+
+    private void MoveToTarget()
     {
         if (target == null)
         {
@@ -14,11 +20,23 @@ public class Projectile : MonoBehaviour
             return;
         }
 
-        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
-        if (Vector3.Distance(transform.position, target.transform.position) < 0.2f)
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            target.transform.position,
+            speed * Time.deltaTime
+        );
+
+        float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
+
+        if (distanceToTarget <= 0.2f)
         {
             Enemy enemy = target.GetComponent<Enemy>();
-            enemy.TakeDamage(damage);    
+
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+            }
+
             Destroy(gameObject);
         }
     }
