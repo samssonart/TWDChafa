@@ -1,15 +1,15 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class GoldenEnemy : MonoBehaviour
 {
-    [Header("State")]
-    [SerializeField] private float moveSpeed = 2;
-    [SerializeField] private int maxHealth = 10;
-    [SerializeField] private int reward = 5;
+    [Header("Stat")]
+    [SerializeField] private float moveSpeed = 1;
+    [SerializeField] private int maxHealth = 20;
+    [SerializeField] private int reward = 30;
     [SerializeField] private int lifeDamage = 1;
-  
 
-    private int currentHealth ;
+
+    private int currentHealth;
     private int currentWaypointIndex;
     private GameObject[] waypoints;
 
@@ -20,19 +20,19 @@ public class Enemy : MonoBehaviour
 
         if (waypoints == null || waypoints.Length == 0)
         {
-            Debug.LogWarning("Enemy: No Waypoints found in the scene.");
+            Debug.LogWarning("GoldenEnemy : No waypoints encontrados.");
         }
 
     }
 
     private void Update()
     {
-        if (waypoints == null || waypoints.Length == 0 )
+        if (waypoints == null || waypoints.Length == 0)
         {
             return;
         }
 
-        if (currentWaypointIndex >= waypoints.Length )
+        if (currentWaypointIndex >= waypoints.Length)
         {
             ReachGoal();
             return;
@@ -61,7 +61,7 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if ( damage <= 0)
+        if (damage <= 0)
         {
             return;
         }
@@ -73,7 +73,7 @@ public class Enemy : MonoBehaviour
             Die();
         }
     }
-  
+
 
     private void Die()
     {
@@ -82,7 +82,7 @@ public class Enemy : MonoBehaviour
             GameManager.Instance.AddMoney(reward);
         }
 
-        Destroy(gameObject );
+        Destroy(gameObject);
     }
 
     private void ReachGoal()
@@ -94,6 +94,7 @@ public class Enemy : MonoBehaviour
 
         Destroy(gameObject);
     }
-
-    
 }
+
+
+

@@ -1,90 +1,166 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
+
 
 // Clase principal que maneja el dinero, vidas, spawn de enemigos y actualiza la UI
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    public static GameManager Instance { get; private set; }
 
-    public int money = 100;
-    public int lives = 10;
-    public TextMeshProUGUI moneyText;
-    public TextMeshProUGUI livesText;
-    public GameObject enemyPrefab;
-    public Transform spawnPoint;
+    [Header("Game Start")]
+    [SerializeField] private int startingMoney = 100;
+    [SerializeField] private int startingLives = 10;
+    [SerializeField] private float spawnInterval = 2f;
+    [SerializeField] private float goldenSpawnInterval = 10f;
 
-    private float spawnTimer = 0f;
-    public float spawnInterval = 2f;
+    [Header("UI")]
+    [SerializeField] private TextMeshProUGUI moneyText;
+    [SerializeField] private TextMeshProUGUI livesText;
 
-    void Awake()
+    [Header("Enemy Spawn")]
+    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private GameObject goldenEnemyPrefab;
+    
+
+  
+    public int Money { get; private set; }
+    public int Lives { get; private set; }
+
+
+    private float spawnTimer;
+    private float goldenSpawnTimer;
+
+    private void Awake()
     {
-        if (Instance != null)
+        if(Instance != null && Instance != this)
         {
-            Destroy(Instance.gameObject);
+            Destroy(gameObject);
+            return;
+
+            
         }
+
         Instance = this;
+
+
     }
+   
 
     void Start()
     {
+       Money = startingMoney;
+        Lives = startingLives;
         UpdateUI();
     }
 
     void Update()
     {
+        HandleEnemySpawn();
+      
+    }
+
+    public void  HandleEnemySpawn()
+    {
+        if (enemyPrefab == null || spawnPoint == null)
+
+        {
+            return;
+        }
+
         spawnTimer += Time.deltaTime;
+        goldenSpawnTimer += Time.deltaTime;
+
+
         if (spawnTimer >= spawnInterval)
         {
             SpawnEnemy();
-            spawnTimer = 0f;
+            spawnTimer = 0;
         }
-        // Te da dinero para probar, espero que los jugadores no sean tramposos
-        if (Keyboard.current.mKey.wasPressedThisFrame)
+
+        if(goldenEnemyPrefab != null && goldenSpawnTimer >= goldenSpawnInterval)
         {
-            money += 10;
-            UpdateUI();
+            SpawnGoldenEnemy();
+            goldenSpawnTimer = 0;
         }
+
+
+
     }
 
-    void SpawnEnemy()
+    private void SpawnGoldenEnemy()
     {
-        Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        Instantiate(goldenEnemyPrefab, spawnPoint.position , Quaternion.identity);
+    }
+
+   private  void SpawnEnemy()
+    {
+        Instantiate(enemyPrefab, spawnPoint.position , Quaternion.identity);
     }
 
     public void AddMoney(int amount)
     {
-        money += amount;
+       if (amount < 0)
+        {
+            return;
+        }
+
+        Money += amount;
         UpdateUI();
     }
 
     public bool SpendMoney(int amount)
     {
-        if (money >= amount)
+       if (amount < 0)
+        {  return false; }
+
+       if (Money < amount)
         {
-            money -= amount;
-            UpdateUI();
-            return true;
+            return false;
         }
 
-        return false;
+       Money -= amount; 
+        UpdateUI();
+        return true;
     }
 
     public void LoseLife(int amount)
     {
-        lives -= amount;
-        UpdateUI();
-        if (lives <= 0)
+        if (amount <= 0) { return; }
+
+        Lives -= amount;
+
+        if(Lives < 0)
         {
-            // Estas muerto
-            Debug.Log("Ya valiste.");
-            Time.timeScale = 0f;
+            Lives = 0;
         }
+
+        UpdateUI();
+        if (Lives == 0)
+        {
+            GameOver();
+        }
+            
+    
     }
 
-    void UpdateUI()
+    private void GameOver()
     {
-        moneyText.text = "$ " + money;
-        livesText.text = "Vidas: " + lives;
+        Debug.Log("Game Over ");
+        Time.timeScale = 0f;
+    }
+
+     private  void UpdateUI()
+    {
+        if ( moneyText != null )
+        {
+            moneyText.text = $"$ { Money} ";
+        }
+
+        if ( livesText != null )
+        {
+            livesText.text = $"Vidas :{Lives}";
+        }
+        
     }
 }
