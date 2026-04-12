@@ -90,6 +90,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!136 &844762234887556193
 CapsuleCollider:
@@ -126,6 +127,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91379bdd576699644abca23d7b5bee81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  speed: 2
-  health: 10
-  reward: 5
+  _speed: 2
+  _health: 10
+  _reward: 5
+  _waypoints:
+  - {fileID: 0}
+  _goal: {fileID: 7355609719641584345, guid: 618150477723db5488230fd27951d8a2, type: 3}

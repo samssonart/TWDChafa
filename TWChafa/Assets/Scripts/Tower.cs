@@ -2,18 +2,27 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    public float range = 5f;
-    public float fireRate = 1f;
-    public GameObject projectilePrefab;
-    public Transform firePoint;
+    public float _range = 5f;
+    public float _fireRate = 1f;
+    public ProjectilePool _projectilePrefab;
+    public Transform _firePoint;
 
-    private float fireTimer = 0f;
+    private float _fireTimer = 0f;
 
     void Update()
     {
-        fireTimer += Time.deltaTime;
+        if (_firePoint == null || _projectilePrefab == null)
+        {
+            return;
+        } 
 
-        if (fireTimer < 1f / fireRate) return;
+        _fireTimer += Time.deltaTime;
+
+        if (_fireTimer < 1f / _fireRate)
+        {
+            return;
+        }
+
 
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         GameObject nearest = null;
@@ -21,8 +30,13 @@ public class Tower : MonoBehaviour
 
         foreach (GameObject e in enemies)
         {
+            if (e == null || !e.activeInHierarchy)
+            {
+                continue;
+            }
             float d = Vector3.Distance(transform.position, e.transform.position);
-            if (d < nearestDist && d <= range)
+
+            if (d < nearestDist && d <= _range)
             {
                 nearest = e;
                 nearestDist = d;
@@ -31,10 +45,14 @@ public class Tower : MonoBehaviour
 
         if (nearest != null)
         {
-            GameObject p = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
-            Projectile proj = p.GetComponent<Projectile>();
-            proj.target = nearest;
-            fireTimer = 0f;
+            Projectile proj = _projectilePrefab.GetObject();
+            proj.transform.position = _firePoint.position;
+            proj.transform.rotation = Quaternion.identity;
+            proj.Launch(nearest);
+            _fireTimer = 0f;
+
+
+
         }
     }
 }

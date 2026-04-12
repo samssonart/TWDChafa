@@ -122,6 +122,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!136 &731829253994541060
 CapsuleCollider:
@@ -158,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be84f82fd4db43c4e9ae5ab689068cc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
-  range: 5
-  fireRate: 4
-  projectilePrefab: {fileID: 5013314806940215100, guid: 61d46e6a970b2044fb10668707f2a5da, type: 3}
-  firePoint: {fileID: 1505491463334519262}
+  _range: 5
+  _fireRate: 1
+  _projectilePrefab: {fileID: 1529682970262114201, guid: 64dd7fd12ef74314189808e151dfa4af, type: 3}
+  _firePoint: {fileID: 1505491463334519262}
