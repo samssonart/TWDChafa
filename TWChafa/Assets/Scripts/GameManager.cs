@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public Transform spawnPoint;
 
     private float spawnTimer = 0f;
-    public float spawnInterval = 2f;
+    public float spawnInterval = 1f;
 
     void Awake()
     {
@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void UpdateUI()
+    public void UpdateUI()
     {
         moneyText.text = "$ " + money;
         livesText.text = "Vidas: " + lives;
