@@ -1,30 +1,41 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// Clase de UI que se comunica con el GameManager para comprar torres
 public class GameUI : MonoBehaviour
 {
-    public Button buyTowerButton;
-    public GameObject towerPrefab;
-    public Transform towerParent;
-    public int towerCost = 50;
+    [Header("Botón de compra")]
+    [SerializeField] private Button buyTowerButton;
 
-    void Start()
+    [Header("Torre")]
+    [SerializeField] private GameObject towerPrefab;
+    [SerializeField] private Transform towerParent;
+    [SerializeField] private int towerCost = 50;
+
+    private void Start()
     {
-        buyTowerButton.onClick.AddListener(OnBuyTowerClicked);
+        if (buyTowerButton != null)
+        {
+            buyTowerButton.onClick.AddListener(OnBuyTowerClicked);
+        }
     }
 
-    void OnBuyTowerClicked()
+    private void OnBuyTowerClicked()
     {
-        if (GameManager.Instance.SpendMoney(towerCost))
+        if (GameManager.Instance == null)
         {
-            GameObject t = Instantiate(towerPrefab, Vector3.zero, Quaternion.identity);
-            t.transform.SetParent(towerParent);
-            t.transform.localPosition = Vector3.zero;
+            return;
         }
-        else
+
+        bool couldBuyTower = GameManager.Instance.SpendMoney(towerCost);
+
+        if (!couldBuyTower)
         {
             Debug.Log("No hay suficiente dinero para comprar la torre.");
+            return;
         }
+
+        Instantiate(towerPrefab, towerParent.position, Quaternion.identity, towerParent);
+
+        GameManager.Instance.RegisterTowerPurchase();
     }
 }

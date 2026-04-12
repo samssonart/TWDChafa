@@ -2,40 +2,58 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    public float range = 5f;
-    public float fireRate = 1f;
-    public GameObject projectilePrefab;
-    public Transform firePoint;
+    [Header("Ataque")]
+    [SerializeField] private float range = 5f;
+    [SerializeField] private float fireRate = 1f;
+
+    [Header("Referencias")]
+    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private Transform firePoint;
 
     private float fireTimer = 0f;
 
-    void Update()
+    private void Update()
     {
         fireTimer += Time.deltaTime;
 
-        if (fireTimer < 1f / fireRate) return;
-
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        GameObject nearest = null;
-        float nearestDist = float.MaxValue;
-
-        foreach (GameObject e in enemies)
+        if (fireTimer >= 1f / fireRate)
         {
-            float d = Vector3.Distance(transform.position, e.transform.position);
-            if (d < nearestDist && d <= range)
+            ShootNearestEnemy();
+        }
+    }
+
+    private void ShootNearestEnemy()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        GameObject nearestEnemy = null;
+        float nearestDistance = float.MaxValue;
+
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            float distance = Vector3.Distance(transform.position, enemies[i].transform.position);
+
+            if (distance <= range && distance < nearestDistance)
             {
-                nearest = e;
-                nearestDist = d;
+                nearestDistance = distance;
+                nearestEnemy = enemies[i];
             }
         }
 
-        if (nearest != null)
+        if (nearestEnemy == null)
         {
-            GameObject p = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
-            Projectile proj = p.GetComponent<Projectile>();
-            proj.target = nearest;
-            fireTimer = 0f;
+            return;
         }
+
+        GameObject newProjectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+
+        Projectile projectileScript = newProjectile.GetComponent<Projectile>();
+
+        if (projectileScript != null)
+        {
+            projectileScript.target = nearestEnemy;
+        }
+
+        fireTimer = 0f;
     }
 }
-
