@@ -2,9 +2,15 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public GameObject target;
+    GameObject target;
     public float speed = 10f;
-    public int damage = 1;
+    int damage;
+
+    public void Initialize(GameObject newTarget, int newDamage)
+    {
+        target = newTarget;
+        damage = newDamage;
+    }
 
     void Update()
     {
@@ -17,8 +23,8 @@ public class Projectile : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
         if (Vector3.Distance(transform.position, target.transform.position) < 0.2f)
         {
-            Enemy enemy = target.GetComponent<Enemy>();
-            enemy.TakeDamage(damage);    
+            if (target.TryGetComponent<Enemy>(out var enemy))
+                enemy.TakeDamage(damage);
             Destroy(gameObject);
         }
     }
