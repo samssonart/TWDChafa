@@ -90,6 +90,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!135 &3872645012293579171
 SphereCollider:
@@ -124,6 +125,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b893b5ca38999f4da4995a06e82ee28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
-  target: {fileID: 0}
-  speed: 10
-  damage: 1
+  _target: {fileID: 0}
+  _speed: 10
+  _damage: 2

@@ -4,64 +4,44 @@ using UnityEngine;
 
 public class ProjectilePool : MonoBehaviour
 {
-    public static ProjectilePool Instance;
+    public Projectile projectilePrefab;
+    public int initialSize = 10;
 
-    public GameObject _projectilePrefab;
-    public int _initialSize = 10;
+    private readonly Queue<Projectile> _availableObjects = new Queue<Projectile>();
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private Queue<GameObject> pool = new Queue<GameObject>();
-
-    void Awake()
-    {
-      if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-      Instance = this;
-    }
     void Start()
     {
-        if (_projectilePrefab == null)
+        for (int i = 0; i < initialSize; i++)
         {
-            Debug.LogError("ProjectilePool no esta asignado");
-            return;
+            Projectile p = Instantiate(projectilePrefab);
+            p.transform.SetParent(transform);
+            p.gameObject.SetActive(false);
+            p.SetPool(this);
+            _availableObjects.Enqueue(p);
         }
-
-        for (int i = 0; i < _initialSize; i++)
-        {
-            GameObject projectile = Instantiate(_projectilePrefab);
-            projectile.SetActive(false);
-            pool.Enqueue(projectile);
-        }
-
     }
 
-    public GameObject GetProjectile()
+    public Projectile GetObject()
     {
-        if (pool.Count > 0)
+        Projectile objectToReturn;
+
+        if (_availableObjects.Count > 0)
         {
-            GameObject projectile = pool.Dequeue();
-            projectile.SetActive(true);
-            return projectile;
+            objectToReturn = _availableObjects.Dequeue();
+        }
+        else
+        {
+            objectToReturn = Instantiate(projectilePrefab);
+            objectToReturn.SetPool(this);
         }
 
-        GameObject newProjectile = Instantiate(_projectilePrefab, transform); 
-        return newProjectile;
-
+        objectToReturn.gameObject.SetActive(true);
+        return objectToReturn;
     }
 
-    // Update is called once per frame
-    public void ReturnProjectile(GameObject projectile)
+    public void ReturnObject(Projectile projectile)
     {
-        if (projectile == null)
-        {  
-            return; 
-        }  
-
-        projectile.SetActive(false);
-        pool.Enqueue(projectile);
-        
+        projectile.gameObject.SetActive(false);
+        _availableObjects.Enqueue(projectile);
     }
 }

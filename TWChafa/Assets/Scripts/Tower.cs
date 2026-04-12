@@ -2,23 +2,23 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    public float range = 5f;
-    public float fireRate = 1f;
-    public GameObject projectilePrefab;
-    public Transform firePoint;
+    public float _range = 5f;
+    public float _fireRate = 1f;
+    public ProjectilePool _projectilePrefab;
+    public Transform _firePoint;
 
-    private float fireTimer = 0f;
+    private float _fireTimer = 0f;
 
     void Update()
     {
-        if (firePoint == null || projectilePrefab == null)
+        if (_firePoint == null || _projectilePrefab == null)
         {
             return;
         } 
 
-        fireTimer += Time.deltaTime;
+        _fireTimer += Time.deltaTime;
 
-        if (fireTimer < 1f / fireRate)
+        if (_fireTimer < 1f / _fireRate)
         {
             return;
         }
@@ -36,7 +36,7 @@ public class Tower : MonoBehaviour
             }
             float d = Vector3.Distance(transform.position, e.transform.position);
 
-            if (d < nearestDist && d <= range)
+            if (d < nearestDist && d <= _range)
             {
                 nearest = e;
                 nearestDist = d;
@@ -45,17 +45,14 @@ public class Tower : MonoBehaviour
 
         if (nearest != null)
         {
-            GameObject p = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+            Projectile proj = _projectilePrefab.GetObject();
+            proj.transform.position = _firePoint.position;
+            proj.transform.rotation = Quaternion.identity;
+            proj.Launch(nearest);
+            _fireTimer = 0f;
 
 
-            Projectile proj = p.GetComponent<Projectile>();
 
-            if (proj != null)
-            {
-                proj.target = nearest;
-                fireTimer = 0f;
-            }
-            
         }
     }
 }
