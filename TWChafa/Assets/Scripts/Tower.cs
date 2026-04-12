@@ -2,10 +2,11 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    public float range = 5f;
-    public float fireRate = 1f;
-    public GameObject projectilePrefab;
-    public Transform firePoint;
+    [Header("Attack Settigs")]
+    [SerializeField]private float range = 5f;
+    [SerializeField]private float fireRate = 1f;
+    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] public Transform firePoint;
 
     private float fireTimer = 0f;
 

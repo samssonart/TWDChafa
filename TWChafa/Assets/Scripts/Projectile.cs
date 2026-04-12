@@ -18,8 +18,13 @@ public class Projectile : MonoBehaviour
         if (Vector3.Distance(transform.position, target.transform.position) < 0.2f)
         {
             Enemy enemy = target.GetComponent<Enemy>();
-            enemy.TakeDamage(damage);    
+            if (enemy != null)
+            {
+
+                enemy.TakeDamage(damage);
+            }
             Destroy(gameObject);
+
         }
     }
 }
